@@ -3,6 +3,10 @@ import CategoryList from "./CategoryList";
 import Navi from "./Navi";
 import ProductList from "./ProductList";
 import { Container, Row, Col } from "reactstrap";
+import alertify from "alertifyjs";
+import { Route, Switch } from "react-router-dom";
+import NotFound from "./Notfound";
+import CartList from "./CartList";
 
 export default class App extends Component {
   state = { currentCategory: "", products: [], cart: [] };
@@ -25,16 +29,22 @@ export default class App extends Component {
       .then((data) => this.setState({ products: data }));
   };
 
-  addToCart = product =>{
-   let newCart = this.state.cart;
-   var addedItem = newCart.find(c=>c.product.id === product.id);
-   if(addedItem){
-     addedItem.quantity+=1;
-   }else{
-    newCart.push({product:product,quantity:1});
-   }
-   this.setState({cart:newCart});
-  }
+  addToCart = (product) => {
+    let newCart = this.state.cart;
+    var addedItem = newCart.find((c) => c.product.id === product.id);
+    if (addedItem) {
+      addedItem.quantity += 1;
+    } else {
+      newCart.push({ product: product, quantity: 1 });
+    }
+    this.setState({ cart: newCart });
+    alertify.success(product.productName + " added to cart!", 2);
+  };
+
+  removeFromCart = (product) => {
+    let newCart = this.state.cart.filter((c) => c.product.id !== product.id);
+    this.setState({ cart: newCart });
+  };
 
   render() {
     let productInfo = { title: "Product List", anotherThing: "Another Thing" };
@@ -43,7 +53,7 @@ export default class App extends Component {
     return (
       <div>
         <Container>
-          <Navi cart={this.state.cart}/>
+          <Navi removeFromCart={this.removeFromCart} cart={this.state.cart} />
           <Row>
             <Col xs="3">
               <CategoryList
@@ -53,12 +63,23 @@ export default class App extends Component {
               />
             </Col>
             <Col xs="9">
-              <ProductList
-                addToCart={this.addToCart}
-                products={this.state.products}
-                currentCategory={this.state.currentCategory}
-                info={productInfo}
-              />
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={(props) => (
+                    <ProductList
+                      {...props}
+                      addToCart={this.addToCart}
+                      products={this.state.products}
+                      currentCategory={this.state.currentCategory}
+                      info={productInfo}
+                    />
+                  )}
+                ></Route>
+                <Route exact path="/cart" component={CartList}></Route>
+                <Route component={NotFound}></Route>
+              </Switch>
             </Col>
           </Row>
         </Container>
