@@ -1,4 +1,19 @@
-There is api folder in project. It is our database folder.
-To run project we should go to api folder and run ' json-server --watch db.json ' command in visual code.
-After that we should go back to main project folder and run ' npm start ' and give response with ' Y ' option.
-Project should be run now.
+### Run server
+
+You should relocate to api folder in project and run this command:
+
+### `json-server --watch db.json`
+
+Runs the server in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
+
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
+
